@@ -13,7 +13,6 @@ public class Constants {
         DateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         String formattedDate=dateFormat.format(date);
-        System.out.println("Current time of the day using Calendar - 24 hour format: "+ formattedDate);
         return formattedDate;
     }
 }

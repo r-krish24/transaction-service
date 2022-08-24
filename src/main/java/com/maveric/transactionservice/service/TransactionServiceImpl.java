@@ -58,5 +58,11 @@ public class TransactionServiceImpl implements TransactionService{
         return mapper.map(transactionResult);
     }
 
+    @Override
+    public String deleteTransaction(String transactionId) {
+        repository.deleteById(transactionId);
+        return "Transaction deleted successfully.";
+    }
+
 
 }
