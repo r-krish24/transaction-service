@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.management.ConstructorParameters;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +21,6 @@ public class Transaction {
     private String accountId;
     private Type type;
     private Number amount;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
 }

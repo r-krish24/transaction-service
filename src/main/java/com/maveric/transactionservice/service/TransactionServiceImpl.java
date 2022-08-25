@@ -3,7 +3,6 @@ package com.maveric.transactionservice.service;
 import com.maveric.transactionservice.dto.TransactionDto;
 import com.maveric.transactionservice.exception.TransactionNotFoundException;
 import com.maveric.transactionservice.mapper.TransactionMapper;
-import com.maveric.transactionservice.mapper.TransactionMapperImpl;
 import com.maveric.transactionservice.model.Transaction;
 import com.maveric.transactionservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.maveric.transactionservice.constants.Constants.getCurrentDateTime;
 @Service
@@ -28,15 +26,11 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public List<TransactionDto> getTransactions(Integer page, Integer pageSize) {
-        Pageable paging = (Pageable) PageRequest.of(page, pageSize);
+        Pageable paging = PageRequest.of(page, pageSize);
         Page<Transaction> pageResult = repository.findAll(paging);
         if(pageResult.hasContent()) {
-            return pageResult.getContent().stream()
-                    .map(
-                            transaction -> mapper.map(transaction)
-                    ).collect(
-                            Collectors.toList()
-                    );
+            List<Transaction> transaction = pageResult.getContent();
+            return mapper.mapToDto(transaction);
         } else {
             return new ArrayList<>();
         }

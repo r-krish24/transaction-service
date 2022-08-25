@@ -32,12 +32,24 @@ public class TransactionMapperImpl implements TransactionMapper{
     }
 
     @Override
-    public List<Transaction> map(List<TransactionDto> transactions) {
-        List<Transaction> list = new ArrayList<Transaction>(transactions.size());
+    public List<Transaction> mapToModel(List<TransactionDto> transactions) {
+        List<Transaction> list = new ArrayList<>(transactions.size());
         for(TransactionDto transactionDto:transactions)
         {
             list.add(map(transactionDto));
         }
         return list;
     }
+
+    @Override
+    public List<TransactionDto> mapToDto(List<Transaction> transactions) {
+        List<TransactionDto> list = new ArrayList<>(transactions.size());
+        for(Transaction transaction:transactions)
+        {
+            list.add(map(transaction));
+        }
+        return list;
+    }
+
+
 }

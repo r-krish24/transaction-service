@@ -13,5 +13,7 @@ public interface TransactionMapper {
 
     TransactionDto map(Transaction transaction);
 
-    List<Transaction> map (List<TransactionDto> transactions);
+    List<Transaction> mapToModel (List<TransactionDto> transactions);
+
+    List<TransactionDto> mapToDto (List<Transaction> transactions);
 }
