@@ -26,7 +26,7 @@ public class TransactionController {
     @PostMapping("accounts/{accountId}/transactions")
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @RequestBody TransactionDto transactionDto) {
         TransactionDto transactionDtoResponse = transactionService.createTransaction(transactionDto);
-        return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
+        return new ResponseEntity<>(transactionDtoResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("accounts/{accountId}/transactions/{transactionId}")
