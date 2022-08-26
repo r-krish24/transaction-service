@@ -1,7 +1,7 @@
 package com.maveric.transactionservice.service;
 
 import com.maveric.transactionservice.dto.TransactionDto;
-import com.maveric.transactionservice.exception.TransactionNotFoundException;
+import com.maveric.transactionservice.exception.Exception404;
 import com.maveric.transactionservice.mapper.TransactionMapper;
 import com.maveric.transactionservice.model.Transaction;
 import com.maveric.transactionservice.repository.TransactionRepository;
@@ -48,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public TransactionDto getTransactionById(String transactionId) {
-        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
+        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new Exception404("Transaction not found"));
         return mapper.map(transactionResult);
     }
 

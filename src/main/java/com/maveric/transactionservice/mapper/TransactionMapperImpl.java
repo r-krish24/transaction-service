@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapperImpl implements TransactionMapper{
@@ -33,22 +34,24 @@ public class TransactionMapperImpl implements TransactionMapper{
 
     @Override
     public List<Transaction> mapToModel(List<TransactionDto> transactions) {
-        List<Transaction> list = new ArrayList<>(transactions.size());
-        for(TransactionDto transactionDto:transactions)
-        {
-            list.add(map(transactionDto));
-        }
-        return list;
+        return transactions.stream().map(transaction -> new Transaction(
+                transaction.get_id(),
+                transaction.getAccountId(),
+                transaction.getType(),
+                transaction.getAmount(),
+                transaction.getCreatedAt()
+        )).collect(Collectors.toList());
     }
 
     @Override
     public List<TransactionDto> mapToDto(List<Transaction> transactions) {
-        List<TransactionDto> list = new ArrayList<>(transactions.size());
-        for(Transaction transaction:transactions)
-        {
-            list.add(map(transaction));
-        }
-        return list;
+        return transactions.stream().map(transactionDto -> new TransactionDto(
+                transactionDto.get_id(),
+                transactionDto.getAccountId(),
+                transactionDto.getType(),
+                transactionDto.getAmount(),
+                transactionDto.getCreatedAt()
+        )).collect(Collectors.toList());
     }
 
 
