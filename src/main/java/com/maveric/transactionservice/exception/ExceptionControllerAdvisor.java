@@ -1,18 +1,70 @@
 package com.maveric.transactionservice.exception;
 
 import com.maveric.transactionservice.dto.ErrorDto;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @RestControllerAdvice
 public class ExceptionControllerAdvisor extends ResponseEntityExceptionHandler {
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException exception,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        ErrorDto error = new ErrorDto();
+        error.setCode("400");
+        error.setMessage("The server could not understand the request due to invalid syntax.");
+        return new ResponseEntity(error, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException exception,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        ErrorDto error = new ErrorDto();
+        error.setCode("400");
+        error.setMessage("The server could not understand the request due to invalid syntax, Kindly enter valid inputs.");
+        return new ResponseEntity(error, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException exception,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        ErrorDto error = new ErrorDto();
+        error.setCode("405");
+        error.setMessage("Method Not Allowed. Kindly check the Request URL and Request Type.");
+        return new ResponseEntity(error, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException exception,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        ErrorDto error = new ErrorDto();
+        error.setCode("404");
+        error.setMessage("The server can not find the requested resource.");
+        return new ResponseEntity(error, headers, status);
+    }
 
     @ExceptionHandler(Exception400.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

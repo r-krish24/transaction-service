@@ -1,16 +1,44 @@
 package com.maveric.transactionservice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maveric.transactionservice.constants.Type;
+import com.maveric.transactionservice.dto.TransactionDto;
+import com.maveric.transactionservice.model.Transaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class TransactionServiceApplicationTests {
+public class TransactionServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
 		assertTrue(true);
+	}
+
+	public static String asJsonString(final Object obj) {
+		try {
+			return new ObjectMapper().writeValueAsString(obj);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public static Transaction getTransaction()
+	{
+		return  Transaction.builder()
+				.accountId("1234")
+				.type(Type.CREDIT)
+				.amount(2000)
+				.build();
+	}
+	public static TransactionDto getTransactionDto()
+	{
+		return  TransactionDto.builder()
+				.accountId("1234")
+				.type(Type.CREDIT)
+				.amount(2000)
+				.build();
 	}
 
 }

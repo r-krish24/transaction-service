@@ -53,9 +53,10 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public String deleteTransaction(String transactionId) {
-        repository.deleteById(transactionId);
-        return "Transaction deleted successfully.";
+    public String deleteTransaction(String transactionId) throws Exception404 {
+            Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new Exception404("Transaction not found"));
+            repository.deleteById(transactionId);
+            return "Transaction deleted successfully.";
     }
 
 
