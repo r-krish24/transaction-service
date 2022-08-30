@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 public class TransactionServiceApplicationTests {
 
+	public static final String apiV1 = "/api/v1/accounts/1/transactions";
 	@Test
 	void contextLoads() {
 		assertTrue(true);

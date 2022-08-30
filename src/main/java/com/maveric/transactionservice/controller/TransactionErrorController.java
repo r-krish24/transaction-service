@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class MyErrorController implements ErrorController {
+public class TransactionErrorController implements ErrorController {
 
     @GetMapping("/error")
     public ResponseEntity<ErrorDto> errorHandler(HttpServletRequest req) {

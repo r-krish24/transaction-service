@@ -3,7 +3,7 @@ package com.maveric.transactionservice.dto;
 import com.maveric.transactionservice.constants.Type;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 
@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 public class TransactionDto {
 
     private String _id;
-    @NotNull
+    @NotNull(message = "Account Id is mandatory")
     private String accountId;
-    @NotNull
+    @NotNull(message = "Type is mandatory - 'CREDIT' or 'DEBIT'")
     private Type type;
-    @NotNull
+    @NotNull(message = "Amount is mandatory")
+    @Min(value=0,message = "Amount cannot be less than zero")
     private Number amount;
     private LocalDateTime createdAt;
 }

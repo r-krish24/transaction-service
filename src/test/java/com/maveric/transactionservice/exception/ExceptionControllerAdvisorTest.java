@@ -16,7 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import static com.maveric.transactionservice.TransactionServiceApplicationTests.asJsonString;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static com.maveric.transactionservice.TransactionServiceApplicationTests.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WebMvcTest(ExceptionControllerAdvisor.class)
 public class ExceptionControllerAdvisorTest {
-    private static final String apiV1 = "/api/v1/accounts/1/transactions";
+
 
     @Autowired
     private MockMvc mock;
@@ -43,19 +45,11 @@ public class ExceptionControllerAdvisorTest {
     @Test
     public void whenRequestSyntaxNotValidShouldGetError400WhenRequestMadeToCreateTransactionDetails() throws Exception
     {
-        MvcResult mvcResult =
-                mock.perform(post(apiV1)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(asJsonString(new TransactionDto(null, "1234", Type.CREDIT, 3000, null)))
-                        )
-                        .andExpect(status().isBadRequest())
-                        .andReturn();
-
-        int expectedErrorResponse = 400;
-        int actualResponse = mvcResult.getResponse().getStatus();
-        System.out.println("actualResponseBody->-->->->"+actualResponse);
-        assertThat(actualResponse)
-                .isEqualTo(expectedErrorResponse);
+        mock.perform(MockMvcRequestBuilders.post(apiV1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(getTransactionDto()))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
     }
 
 
@@ -90,5 +84,6 @@ public class ExceptionControllerAdvisorTest {
         assertThat(actualResponse)
                 .isEqualTo(expectedErrorResponse);
     }
+
 
 }

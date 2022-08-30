@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import static com.maveric.transactionservice.TransactionServiceApplicationTests.getTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataMongoTest
 @RunWith(SpringRunner.class)
@@ -26,6 +27,7 @@ public class TransactionRepositoryTest {
     @Test
     public void testFindAll() {
         List<Transaction> transaction = repository.findAll();
+        assertNotNull(transaction);
         assert(transaction.size()>0);
     }
 

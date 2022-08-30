@@ -12,8 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import static com.maveric.transactionservice.TransactionServiceApplicationTests.asJsonString;
-import static com.maveric.transactionservice.TransactionServiceApplicationTests.getTransactionDto;
+
+import static com.maveric.transactionservice.TransactionServiceApplicationTests.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TransactionController.class)
 @Tag("Integeration Tests")
 public class TransactionControllerTest {
-
-    private static final String apiV1 = "/api/v1/accounts/1/transactions";
 
     @Autowired
     private MockMvc mock;

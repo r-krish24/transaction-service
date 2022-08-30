@@ -1,7 +1,7 @@
 package com.maveric.transactionservice.service;
 
 import com.maveric.transactionservice.dto.TransactionDto;
-import com.maveric.transactionservice.exception.Exception404;
+import com.maveric.transactionservice.exception.TransactionNotFoundException;
 import com.maveric.transactionservice.mapper.TransactionMapper;
 import com.maveric.transactionservice.model.Transaction;
 import com.maveric.transactionservice.repository.TransactionRepository;
@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maveric.transactionservice.constants.Constants.getCurrentDateTime;
+import static com.maveric.transactionservice.constants.Constants.*;
+
 @Service
 public class TransactionServiceImpl implements TransactionService{
 
@@ -36,6 +37,8 @@ public class TransactionServiceImpl implements TransactionService{
         }
     }
 
+
+
     @Override
     public TransactionDto createTransaction(TransactionDto transactionDto) {
         //Adding CreatedTime
@@ -46,17 +49,22 @@ public class TransactionServiceImpl implements TransactionService{
         return  mapper.map(transactionResult);
     }
 
+
+
     @Override
     public TransactionDto getTransactionById(String transactionId) {
-        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new Exception404("Transaction not found"));
+        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId));
         return mapper.map(transactionResult);
     }
 
     @Override
-    public String deleteTransaction(String transactionId) throws Exception404 {
-            Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new Exception404("Transaction not found"));
+    public String deleteTransaction(String transactionId) {
+            if(!repository.findById(transactionId).isPresent())
+            {
+                throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
+            }
             repository.deleteById(transactionId);
-            return "Transaction deleted successfully.";
+            return TRANSACTION_DELETED_SUCCESS;
     }
 
 

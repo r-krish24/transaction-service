@@ -3,10 +3,7 @@ package com.maveric.transactionservice.mapper;
 import com.maveric.transactionservice.dto.TransactionDto;
 import com.maveric.transactionservice.model.Transaction;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapperImpl implements TransactionMapper{
@@ -40,7 +37,7 @@ public class TransactionMapperImpl implements TransactionMapper{
                 transaction.getType(),
                 transaction.getAmount(),
                 transaction.getCreatedAt()
-        )).collect(Collectors.toList());
+        )).toList();
     }
 
     @Override
@@ -51,7 +48,7 @@ public class TransactionMapperImpl implements TransactionMapper{
                 transactionDto.getType(),
                 transactionDto.getAmount(),
                 transactionDto.getCreatedAt()
-        )).collect(Collectors.toList());
+        )).toList();
     }
 
 
