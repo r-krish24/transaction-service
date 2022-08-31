@@ -22,6 +22,12 @@ public class TransactionController {
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
 
+    @GetMapping("accounts/{accountId}/transaction")
+    public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable String accountId)  {
+        List<TransactionDto> transactionDtoResponse = transactionService.getTransactionsByAccountId(accountId);
+        return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
+    }
+
     @PostMapping("accounts/{accountId}/transactions")
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) {
             TransactionDto transactionDtoResponse = transactionService.createTransaction(transactionDto);

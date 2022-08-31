@@ -82,6 +82,17 @@ public class TransactionServiceTest {
     }
 
     @Test
+    public void testGetTransactionByAccountId() {
+        when(repository.findByAccountId("123")).thenReturn(Arrays.asList(getTransaction(),getTransaction()));
+        when(mapper.mapToDto(any())).thenReturn(Arrays.asList(getTransactionDto(),getTransactionDto()));
+
+        List<TransactionDto> transactionDto = service.getTransactionsByAccountId("123");
+
+        assertEquals("1234", transactionDto.get(0).getAccountId());
+        assertEquals(Type.CREDIT, transactionDto.get(1).getType());
+    }
+
+    @Test
     public void testDeleteTransactionById() {
 
         when(repository.findById("123")).thenReturn(Optional.of(getTransaction()));

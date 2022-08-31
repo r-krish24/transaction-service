@@ -3,6 +3,8 @@ package com.maveric.transactionservice.mapper;
 import com.maveric.transactionservice.dto.TransactionDto;
 import com.maveric.transactionservice.model.Transaction;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -31,24 +33,31 @@ public class TransactionMapperImpl implements TransactionMapper{
 
     @Override
     public List<Transaction> mapToModel(List<TransactionDto> transactions) {
-        return transactions.stream().map(transaction -> new Transaction(
+        if(transactions.size()>0)
+            return transactions.stream().map(transaction -> new Transaction(
                 transaction.get_id(),
                 transaction.getAccountId(),
                 transaction.getType(),
                 transaction.getAmount(),
                 transaction.getCreatedAt()
-        )).toList();
+            )).toList();
+        else
+            return Collections.<Transaction>emptyList();
     }
 
     @Override
     public List<TransactionDto> mapToDto(List<Transaction> transactions) {
-        return transactions.stream().map(transactionDto -> new TransactionDto(
-                transactionDto.get_id(),
-                transactionDto.getAccountId(),
-                transactionDto.getType(),
-                transactionDto.getAmount(),
-                transactionDto.getCreatedAt()
-        )).toList();
+        if(transactions.size()>0)
+            return transactions.stream().map(transactionDto -> new TransactionDto(
+                    transactionDto.get_id(),
+                    transactionDto.getAccountId(),
+                    transactionDto.getType(),
+                    transactionDto.getAmount(),
+                    transactionDto.getCreatedAt()
+            )).toList();
+        else
+            return Collections.<TransactionDto>emptyList();
+
     }
 
 

@@ -37,6 +37,11 @@ public class TransactionServiceImpl implements TransactionService{
         }
     }
 
+    @Override
+    public List<TransactionDto> getTransactionsByAccountId(String accountId) {
+        List<Transaction> transactions = repository.findByAccountId(accountId);
+            return mapper.mapToDto(transactions);
+    }
 
 
     @Override

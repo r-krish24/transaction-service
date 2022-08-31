@@ -14,5 +14,4 @@ public class ErrorDto {
     String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<String, String> errors;
-
 }

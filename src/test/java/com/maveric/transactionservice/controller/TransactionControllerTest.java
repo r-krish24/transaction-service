@@ -1,5 +1,6 @@
 package com.maveric.transactionservice.controller;
 
+import com.maveric.transactionservice.exception.TransactionNotFoundException;
 import com.maveric.transactionservice.service.TransactionService;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.maveric.transactionservice.TransactionServiceApplicationTests.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +38,15 @@ public class TransactionControllerTest {
     public void shouldGetStatus200WhenRequestMadeTogetTransactions() throws Exception
     {
         mock.perform(get(apiV1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void shouldGetStatus200WhenRequestMadeTogetTransactionsByAccountId() throws Exception
+    {
+        mock.perform(get("/api/v1/accounts/1/transaction")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());

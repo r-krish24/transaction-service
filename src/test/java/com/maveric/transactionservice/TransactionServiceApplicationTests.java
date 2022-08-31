@@ -14,7 +14,7 @@ public class TransactionServiceApplicationTests {
 
 	public static final String apiV1 = "/api/v1/accounts/1/transactions";
 	@Test
-	void contextLoads() {
+	void testDoSomething() {
 		assertTrue(true);
 	}
 
