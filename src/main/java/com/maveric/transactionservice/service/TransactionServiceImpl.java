@@ -54,8 +54,6 @@ public class TransactionServiceImpl implements TransactionService{
         return  mapper.map(transactionResult);
     }
 
-
-
     @Override
     public TransactionDto getTransactionById(String transactionId) {
         Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId));
