@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class TransactionDto {
 
