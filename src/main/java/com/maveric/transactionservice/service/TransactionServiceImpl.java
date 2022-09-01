@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maveric.transactionservice.constants.Constants.getCurrentDateTime;
+import static com.maveric.transactionservice.constants.Constants.*;
+
 @Service
 public class TransactionServiceImpl implements TransactionService{
 
@@ -37,6 +38,13 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
+    public List<TransactionDto> getTransactionsByAccountId(String accountId) {
+        List<Transaction> transactions = repository.findByAccountId(accountId);
+            return mapper.mapToDto(transactions);
+    }
+
+
+    @Override
     public TransactionDto createTransaction(TransactionDto transactionDto) {
         //Adding CreatedTime
         transactionDto.setCreatedAt(getCurrentDateTime());
@@ -48,14 +56,18 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public TransactionDto getTransactionById(String transactionId) {
-        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
+        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId));
         return mapper.map(transactionResult);
     }
 
     @Override
     public String deleteTransaction(String transactionId) {
-        repository.deleteById(transactionId);
-        return "Transaction deleted successfully.";
+            if(!repository.findById(transactionId).isPresent())
+            {
+                throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
+            }
+            repository.deleteById(transactionId);
+            return TRANSACTION_DELETED_SUCCESS;
     }
 
 
