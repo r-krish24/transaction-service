@@ -18,6 +18,10 @@ public class Constants {
     public static final String INCORRECT_URL_CODE="404";
     public static final String INCORRECT_URL_MESSAGE="The server can not find the requested resource.";
 
+    public static final String INVALID_INPUT_TYPE="Type should be - 'CREDIT' or 'DEBIT'";
+
+    public static final String INVALID_INPUT_MESSAGE = "Kindly re-check the inputs provided";
+
     public static LocalDateTime getCurrentDateTime() {
         return (java.time.LocalDateTime.now());
     }

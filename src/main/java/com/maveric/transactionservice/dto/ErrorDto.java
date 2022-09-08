@@ -1,9 +1,6 @@
 package com.maveric.transactionservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-
-import java.util.Map;
 
 @Getter
 @Setter
@@ -12,6 +9,4 @@ import java.util.Map;
 public class ErrorDto {
     String code;
     String message;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Map<String, String> errors;
 }

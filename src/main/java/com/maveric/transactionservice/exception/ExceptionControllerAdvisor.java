@@ -2,14 +2,12 @@ package com.maveric.transactionservice.exception;
 
 import com.maveric.transactionservice.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.util.HashMap;
-import java.util.Map;
 import static com.maveric.transactionservice.constants.Constants.*;
 
 @RestControllerAdvice
@@ -30,15 +28,8 @@ public class ExceptionControllerAdvisor {
     public ErrorDto handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         ErrorDto errorDto = new ErrorDto();
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
         errorDto.setCode(BAD_REQUEST_CODE);
-        errorDto.setMessage(BAD_REQUEST_MESSAGE);
-        errorDto.setErrors(errors);
+        errorDto.setMessage(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return errorDto;
     }
 
@@ -52,6 +43,42 @@ public class ExceptionControllerAdvisor {
         return errorDto;
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException ex) {
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setCode(BAD_REQUEST_CODE);
+        System.out.println(ex.getMessage());
+        try {
+            if (ex.getMessage().contains("com.maveric.transactionservice.constants.Type"))
+                    errorDto.setMessage(INVALID_INPUT_TYPE);
+            else
+                errorDto.setMessage(INVALID_INPUT_MESSAGE);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error with handling HttpMessageNotReadableException");
+        }
+        return errorDto;
+    }
 
+    @ExceptionHandler(PathParamsVsInputParamsMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public final ErrorDto handlePathParamsVsInputParamsMismatchException(PathParamsVsInputParamsMismatchException exception) {
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setCode(BAD_REQUEST_CODE);
+        errorDto.setMessage(exception.getMessage());
+        return errorDto;
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public final ErrorDto handleInsufficientBalanceException(InsufficientBalanceException exception) {
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setCode(BAD_REQUEST_CODE);
+        errorDto.setMessage(exception.getMessage());
+        return errorDto;
+    }
 
 }

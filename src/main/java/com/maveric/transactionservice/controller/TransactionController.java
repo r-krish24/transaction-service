@@ -1,5 +1,8 @@
 package com.maveric.transactionservice.controller;
+import com.maveric.transactionservice.dto.BalanceDto;
+import com.maveric.transactionservice.dto.PairClassDto;
 import com.maveric.transactionservice.dto.TransactionDto;
+import com.maveric.transactionservice.feignconsumer.BalanceServiceConsumer;
 import com.maveric.transactionservice.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,23 +18,44 @@ public class TransactionController {
     @Autowired
     TransactionService transactionService;
 
-    @GetMapping("accounts/{accountId}/transactions")
+    @Autowired
+    BalanceServiceConsumer balanceServiceConsumer;
+
+
+    @GetMapping("accounts/{accountId}/transaction")
     public ResponseEntity<List<TransactionDto>> getTransactions(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
                                                           @RequestParam(defaultValue = "10") Integer pageSize)  {
         List<TransactionDto> transactionDtoResponse = transactionService.getTransactions(page,pageSize);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
 
-    @GetMapping("accounts/{accountId}/transaction")
-    public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable String accountId)  {
-        List<TransactionDto> transactionDtoResponse = transactionService.getTransactionsByAccountId(accountId);
+    @GetMapping("accounts/{accountId}/transactions")
+    public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
+                                                                           @RequestParam(defaultValue = "5") Integer pageSize)  {
+        List<TransactionDto> transactionDtoResponse = transactionService.getTransactionsByAccountId(page,pageSize,accountId);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
 
     @PostMapping("accounts/{accountId}/transactions")
-    public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) {
-            TransactionDto transactionDtoResponse = transactionService.createTransaction(transactionDto);
-            return new ResponseEntity<>(transactionDtoResponse, HttpStatus.CREATED);
+    public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) throws NullPointerException{
+        BalanceDto balanceDto = new BalanceDto();
+        try {
+              ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
+                 balanceDto = responseEntity.getBody();
+            }
+            catch(Exception ex)
+            {
+                System.out.println("Error with Balance service-"+ex.getMessage());
+            }
+        PairClassDto createResponse = transactionService.createTransaction(accountId,transactionDto,balanceDto);
+        try {
+             balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto());
+        }
+        catch(NullPointerException ex)
+        {
+            System.out.println("Error with Balance service, failed to update the balance-"+ex.getMessage());
+        }
+        return new ResponseEntity<>(createResponse.getTransactionDto(), HttpStatus.CREATED);
     }
 
     @GetMapping("accounts/{accountId}/transactions/{transactionId}")

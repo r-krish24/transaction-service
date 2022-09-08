@@ -33,7 +33,7 @@ public class TransactionMapperImpl implements TransactionMapper{
 
     @Override
     public List<Transaction> mapToModel(List<TransactionDto> transactions) {
-        if(transactions.size()>0)
+        if(!transactions.isEmpty())
             return transactions.stream().map(transaction -> new Transaction(
                 transaction.get_id(),
                 transaction.getAccountId(),
@@ -47,7 +47,7 @@ public class TransactionMapperImpl implements TransactionMapper{
 
     @Override
     public List<TransactionDto> mapToDto(List<Transaction> transactions) {
-        if(transactions.size()>0)
+        if(!transactions.isEmpty())
             return transactions.stream().map(transactionDto -> new TransactionDto(
                     transactionDto.get_id(),
                     transactionDto.getAccountId(),
