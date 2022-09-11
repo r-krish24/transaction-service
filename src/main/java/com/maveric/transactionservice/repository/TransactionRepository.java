@@ -8,4 +8,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface TransactionRepository extends MongoRepository<Transaction,String> {
 
     Page<Transaction> findByAccountId(Pageable page, String accountId);
+
+    String deleteByAccountId(String accountId);
 }

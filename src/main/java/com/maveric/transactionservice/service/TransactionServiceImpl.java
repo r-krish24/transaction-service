@@ -112,5 +112,11 @@ public class TransactionServiceImpl implements TransactionService{
             return TRANSACTION_DELETED_SUCCESS;
     }
 
+    @Override
+    public String deleteTransactionByAccountId(String accountId) {
+        repository.deleteByAccountId(accountId);
+        return TRANSACTION_DELETED_SUCCESS;
+    }
+
 
 }

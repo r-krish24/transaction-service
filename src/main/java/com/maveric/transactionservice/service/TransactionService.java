@@ -14,4 +14,6 @@ public interface TransactionService {
     public PairClassDto createTransaction(String accountId, TransactionDto transaction, BalanceDto balanceDto);
     public TransactionDto getTransactionById(String transactionId) throws TransactionNotFoundException;
     public String deleteTransaction(String transactionId) throws TransactionNotFoundException;
+
+    public String deleteTransactionByAccountId(String accountId);
 }
