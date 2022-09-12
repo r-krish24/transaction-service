@@ -1,7 +1,9 @@
 package com.maveric.transactionservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maveric.transactionservice.constants.CurrencyType;
 import com.maveric.transactionservice.constants.Type;
+import com.maveric.transactionservice.dto.BalanceDto;
 import com.maveric.transactionservice.dto.TransactionDto;
 import com.maveric.transactionservice.model.Transaction;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,15 @@ public class TransactionServiceApplicationTests {
 				.accountId("1234")
 				.type(Type.CREDIT)
 				.amount(2000)
+				.build();
+	}
+
+	public static BalanceDto getBalanceDto()
+	{
+		return  BalanceDto.builder()
+				.accountId("1234")
+				.amount(2000)
+				.currency(CurrencyType.INR)
 				.build();
 	}
 

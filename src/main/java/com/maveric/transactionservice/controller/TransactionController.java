@@ -70,7 +70,7 @@ public class TransactionController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("api/v1/accounts/{accountId}/transactions")
+    @DeleteMapping("accounts/{accountId}/transactions")
     public ResponseEntity<String> deleteTransactionByAccountId(@PathVariable String accountId)
     {
         String result = transactionService.deleteTransactionByAccountId(accountId);

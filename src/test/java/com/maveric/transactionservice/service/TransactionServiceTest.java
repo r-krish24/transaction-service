@@ -1,5 +1,6 @@
 package com.maveric.transactionservice.service;
 import com.maveric.transactionservice.constants.Type;
+import com.maveric.transactionservice.dto.PairClassDto;
 import com.maveric.transactionservice.dto.TransactionDto;
 import com.maveric.transactionservice.mapper.TransactionMapper;
 import com.maveric.transactionservice.mapper.TransactionMapperImpl;
@@ -22,10 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.maveric.transactionservice.TransactionServiceApplicationTests.getTransaction;
-import static com.maveric.transactionservice.TransactionServiceApplicationTests.getTransactionDto;
+import static com.maveric.transactionservice.TransactionServiceApplicationTests.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
 
@@ -46,16 +47,16 @@ public class TransactionServiceTest {
     private Page pageResult;
 
 
-//    @Test
-//    public void testCreateTransaction() throws Exception{
-//        when(mapper.map(any(TransactionDto.class))).thenReturn(getTransaction());
-//        when(mapper.map(any(Transaction.class))).thenReturn(getTransactionDto());
-//        when(repository.save(any())).thenReturn(getTransaction());
-//
-//        TransactionDto transactionDto = service.createTransaction(getTransactionDto());
-//
-//        assertSame(transactionDto.getAccountId(), getTransaction().getAccountId());
-//    }
+    @Test
+    public void testCreateTransaction() throws Exception{
+        when(mapper.map(any(TransactionDto.class))).thenReturn(getTransaction());
+        when(mapper.map(any(Transaction.class))).thenReturn(getTransactionDto());
+        when(repository.save(any())).thenReturn(getTransaction());
+
+        PairClassDto pairClassDto = service.createTransaction("1234",getTransactionDto(),getBalanceDto());
+
+        assertSame(pairClassDto.getTransactionDto().getAccountId(), getTransaction().getAccountId());
+    }
 
     @Test
     public void testGetTransactions() {
@@ -84,7 +85,7 @@ public class TransactionServiceTest {
     @Test
     public void testGetTransactionByAccountId() {
         Page<Transaction> pagedResponse = new PageImpl(Arrays.asList(getTransaction(),getTransaction()));
-        when(repository.findByAccountId(any(Pageable.class),"1234")).thenReturn(pagedResponse);
+        when(repository.findByAccountId(any(Pageable.class),eq("1234"))).thenReturn(pagedResponse);
         when(pageResult.hasContent()).thenReturn(true);
         when(pageResult.getContent()).thenReturn(Arrays.asList(getTransaction(),getTransaction()));
         when(mapper.mapToDto(any())).thenReturn(Arrays.asList(getTransactionDto(),getTransactionDto()));
@@ -102,6 +103,15 @@ public class TransactionServiceTest {
         willDoNothing().given(repository).deleteById("123");
 
         String transactionDto = service.deleteTransaction("123");
+
+        assertSame( "Transaction deleted successfully.",transactionDto);
+    }
+
+    @Test
+    public void testDeleteTransactionByAccountId() {
+
+        when(repository.deleteByAccountId("123")).thenReturn("Transaction deleted successfully.");
+        String transactionDto = service.deleteTransactionByAccountId("123");
 
         assertSame( "Transaction deleted successfully.",transactionDto);
     }
