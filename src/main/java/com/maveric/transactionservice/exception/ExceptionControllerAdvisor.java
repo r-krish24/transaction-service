@@ -45,20 +45,25 @@ public class ExceptionControllerAdvisor {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDto handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException ex) {
+    public ErrorDto handleHttpMessageNotReadableException (
+            HttpMessageNotReadableException ex) throws NullPointerException {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(BAD_REQUEST_CODE);
-        System.out.println(ex.getMessage());
+        String message = ex.getMessage()==null?"":ex.getMessage(); //NOSONAR
         try {
-            if (ex.getMessage().contains("com.maveric.transactionservice.constants.Type"))
+                if (message.contains("com.maveric.transactionservice.constants.Type")) //NOSONAR
                     errorDto.setMessage(INVALID_INPUT_TYPE);
-            else
-                errorDto.setMessage(INVALID_INPUT_MESSAGE);
+                else
+                    errorDto.setMessage(INVALID_INPUT_MESSAGE);
+        }
+        catch(NullPointerException e)
+        {
+            System.err.println("Error with handling HttpMessageNotReadableException");
+            throw new NullPointerException();
         }
         catch(Exception e)
         {
-            System.out.println("Error with handling HttpMessageNotReadableException");
+            System.err.println("Error with handling HttpMessageNotReadableException");
         }
         return errorDto;
     }

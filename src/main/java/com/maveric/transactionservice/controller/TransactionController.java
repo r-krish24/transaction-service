@@ -21,21 +21,21 @@ public class TransactionController {
     @Autowired
     BalanceServiceConsumer balanceServiceConsumer;
 
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("accounts/{accountId}/transaction")
     public ResponseEntity<List<TransactionDto>> getTransactions(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
                                                           @RequestParam(defaultValue = "10") Integer pageSize)  {
         List<TransactionDto> transactionDtoResponse = transactionService.getTransactions(page,pageSize);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("accounts/{accountId}/transactions")
     public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
                                                                            @RequestParam(defaultValue = "5") Integer pageSize)  {
         List<TransactionDto> transactionDtoResponse = transactionService.getTransactionsByAccountId(page,pageSize,accountId);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("accounts/{accountId}/transactions")
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) throws NullPointerException{
         BalanceDto balanceDto = new BalanceDto();
@@ -49,7 +49,7 @@ public class TransactionController {
             }
         PairClassDto createResponse = transactionService.createTransaction(accountId,transactionDto,balanceDto);
         try {
-             balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto());
+             balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto()); //NOSONAR
         }
         catch(NullPointerException ex)
         {
@@ -57,19 +57,19 @@ public class TransactionController {
         }
         return new ResponseEntity<>(createResponse.getTransactionDto(), HttpStatus.CREATED);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("accounts/{accountId}/transactions/{transactionId}")
     public ResponseEntity<TransactionDto> getTransactionDetails(@PathVariable String accountId,@PathVariable String transactionId) {
         TransactionDto transactionDtoResponse = transactionService.getTransactionById(transactionId);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("accounts/{accountId}/transactions/{transactionId}")
     public ResponseEntity<String> deleteTransaction(@PathVariable String accountId,@PathVariable String transactionId) {
         String result = transactionService.deleteTransaction(transactionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("accounts/{accountId}/transactions")
     public ResponseEntity<String> deleteTransactionByAccountId(@PathVariable String accountId)
     {
