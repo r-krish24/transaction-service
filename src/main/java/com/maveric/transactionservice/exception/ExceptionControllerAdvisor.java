@@ -51,19 +51,18 @@ public class ExceptionControllerAdvisor {
         errorDto.setCode(BAD_REQUEST_CODE);
         String message = ex.getMessage()==null?"":ex.getMessage(); //NOSONAR
         try {
-                if (message.contains("com.maveric.transactionservice.constants.Type")) //NOSONAR
-                    errorDto.setMessage(INVALID_INPUT_TYPE);
-                else
-                    errorDto.setMessage(INVALID_INPUT_MESSAGE);
+            if (message.contains("com.maveric.transactionservice.constants.Type")) //NOSONAR
+                errorDto.setMessage(INVALID_INPUT_TYPE);
+            else
+                errorDto.setMessage(INVALID_INPUT_MESSAGE);
         }
         catch(NullPointerException e)
         {
-            System.err.println("Error with handling HttpMessageNotReadableException");
             throw new NullPointerException();
         }
         catch(Exception e)
         {
-            System.err.println("Error with handling HttpMessageNotReadableException");
+            e.printStackTrace();
         }
         return errorDto;
     }

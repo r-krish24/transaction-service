@@ -21,55 +21,60 @@ public class TransactionController {
     @Autowired
     BalanceServiceConsumer balanceServiceConsumer;
 
-    @CrossOrigin(origins = "http://localhost:8080")
+    /* Returns list of total transactions */
     @GetMapping("accounts/{accountId}/transaction")
     public ResponseEntity<List<TransactionDto>> getTransactions(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
-                                                          @RequestParam(defaultValue = "10") Integer pageSize)  {
+                                                                @RequestParam(defaultValue = "10") Integer pageSize)  {
         List<TransactionDto> transactionDtoResponse = transactionService.getTransactions(page,pageSize);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    /* Returns list of transactions for the given valid Account ID */
     @GetMapping("accounts/{accountId}/transactions")
     public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable String accountId,@RequestParam(defaultValue = "0") Integer page,
                                                                            @RequestParam(defaultValue = "5") Integer pageSize)  {
         List<TransactionDto> transactionDtoResponse = transactionService.getTransactionsByAccountId(page,pageSize,accountId);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    /* Saves a valid transaction */
     @PostMapping("accounts/{accountId}/transactions")
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) throws NullPointerException{
         BalanceDto balanceDto = new BalanceDto();
         try {
-              ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
-                 balanceDto = responseEntity.getBody();
-            }
-            catch(Exception ex)
-            {
-                System.out.println("Error with Balance service-"+ex.getMessage());
-            }
+            ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
+            balanceDto = responseEntity.getBody();
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
         PairClassDto createResponse = transactionService.createTransaction(accountId,transactionDto,balanceDto);
         try {
-             balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto()); //NOSONAR
+            balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto()); //NOSONAR
         }
         catch(NullPointerException ex)
         {
-            System.out.println("Error with Balance service, failed to update the balance-"+ex.getMessage());
+            ex.printStackTrace();
         }
         return new ResponseEntity<>(createResponse.getTransactionDto(), HttpStatus.CREATED);
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    /* Returns a valid transaction based on Transaction Id*/
     @GetMapping("accounts/{accountId}/transactions/{transactionId}")
     public ResponseEntity<TransactionDto> getTransactionDetails(@PathVariable String accountId,@PathVariable String transactionId) {
         TransactionDto transactionDtoResponse = transactionService.getTransactionById(transactionId);
         return new ResponseEntity<>(transactionDtoResponse, HttpStatus.OK);
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    /* Deletes a valid transaction based on Transaction Id */
     @DeleteMapping("accounts/{accountId}/transactions/{transactionId}")
     public ResponseEntity<String> deleteTransaction(@PathVariable String accountId,@PathVariable String transactionId) {
         String result = transactionService.deleteTransaction(transactionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    /* Deletes a valid list of transactions based on Account Id */
     @DeleteMapping("accounts/{accountId}/transactions")
     public ResponseEntity<String> deleteTransactionByAccountId(@PathVariable String accountId)
     {

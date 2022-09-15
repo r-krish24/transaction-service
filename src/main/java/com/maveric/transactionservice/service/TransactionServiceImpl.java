@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.maveric.transactionservice.constants.Constants.*;
+import static com.maveric.transactionservice.util.Common.getCurrentDateTime;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
@@ -57,7 +58,7 @@ public class TransactionServiceImpl implements TransactionService{
     public PairClassDto createTransaction(String accountId, TransactionDto transactionDto, BalanceDto balanceDto) {
         Transaction transactionResult = new Transaction();
         if(accountId.equals(transactionDto.getAccountId())) {
-            switch(transactionDto.getType())
+            switch(transactionDto.getType())  //NOSONAR
             {
                 case CREDIT ->
                 {
@@ -83,9 +84,6 @@ public class TransactionServiceImpl implements TransactionService{
                             throw new InsufficientBalanceException("Oops! Insufficient balance in your account!");
                         }
                     }
-                    else {
-                        System.out.println("Error with Balance service");
-                    }
                 }
             }
 
@@ -104,12 +102,12 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public String deleteTransaction(String transactionId) {
-            if(!repository.findById(transactionId).isPresent())
-            {
-                throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
-            }
-            repository.deleteById(transactionId);
-            return TRANSACTION_DELETED_SUCCESS;
+        if(!repository.findById(transactionId).isPresent())
+        {
+            throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
+        }
+        repository.deleteById(transactionId);
+        return TRANSACTION_DELETED_SUCCESS;
     }
 
     @Override

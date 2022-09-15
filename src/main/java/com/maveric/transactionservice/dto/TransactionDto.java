@@ -9,14 +9,13 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 public class TransactionDto {
 
     private String _id;
     @NotBlank(message = "Account Id is mandatory")
     private String accountId;
     @NotNull(message = "Type is mandatory - 'CREDIT' or 'DEBIT'")
-    //@EnumTypePattern(anyOf = {Type.CREDIT, Type.DEBIT})
     private Type type;
     @NotNull(message = "Amount is mandatory")
     @Min(value=0,message = "Amount cannot be less than zero")
