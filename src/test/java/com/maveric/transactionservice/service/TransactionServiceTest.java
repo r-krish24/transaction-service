@@ -48,7 +48,7 @@ public class TransactionServiceTest {
 
 
     @Test
-    public void testCreateTransaction() throws Exception{
+    public void createTransaction() throws Exception{
         when(mapper.map(any(TransactionDto.class))).thenReturn(getTransaction());
         when(mapper.map(any(Transaction.class))).thenReturn(getTransactionDto());
         when(repository.save(any())).thenReturn(getTransaction());
@@ -59,7 +59,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void testGetTransactions() {
+    public void getTransactions() {
         Page<Transaction> pagedResponse = new PageImpl(Arrays.asList(getTransaction(),getTransaction()));
         when(repository.findAll(any(Pageable.class))).thenReturn(pagedResponse);
         when(pageResult.hasContent()).thenReturn(true);
@@ -73,7 +73,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void testGetTransactionById() {
+    public void getTransactionById() {
         when(repository.findById("123")).thenReturn(Optional.of(getTransaction()));
         when(mapper.map(any(Transaction.class))).thenReturn(getTransactionDto());
 
@@ -83,7 +83,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void testGetTransactionByAccountId() {
+    public void getTransactionsByAccountId() {
         Page<Transaction> pagedResponse = new PageImpl(Arrays.asList(getTransaction(),getTransaction()));
         when(repository.findByAccountId(any(Pageable.class),eq("1234"))).thenReturn(pagedResponse);
         when(pageResult.hasContent()).thenReturn(true);
@@ -97,7 +97,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void testDeleteTransactionById() {
+    public void deleteTransaction() {
 
         when(repository.findById("123")).thenReturn(Optional.of(getTransaction()));
         willDoNothing().given(repository).deleteById("123");
@@ -108,7 +108,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void testDeleteTransactionByAccountId() {
+    public void deleteTransactionByAccountId() {
 
         when(repository.deleteByAccountId("123")).thenReturn("Transaction deleted successfully.");
         String transactionDto = service.deleteTransactionByAccountId("123");
