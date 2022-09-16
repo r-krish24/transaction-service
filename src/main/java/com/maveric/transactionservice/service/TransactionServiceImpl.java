@@ -1,6 +1,10 @@
 package com.maveric.transactionservice.service;
 
+import com.maveric.transactionservice.dto.BalanceDto;
+import com.maveric.transactionservice.dto.PairClassDto;
 import com.maveric.transactionservice.dto.TransactionDto;
+import com.maveric.transactionservice.exception.InsufficientBalanceException;
+import com.maveric.transactionservice.exception.PathParamsVsInputParamsMismatchException;
 import com.maveric.transactionservice.exception.TransactionNotFoundException;
 import com.maveric.transactionservice.mapper.TransactionMapper;
 import com.maveric.transactionservice.model.Transaction;
@@ -14,7 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maveric.transactionservice.constants.Constants.getCurrentDateTime;
+import static com.maveric.transactionservice.constants.Constants.*;
+import static com.maveric.transactionservice.util.Common.getCurrentDateTime;
+
 @Service
 public class TransactionServiceImpl implements TransactionService{
 
@@ -37,25 +43,77 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TransactionDto createTransaction(TransactionDto transactionDto) {
-        //Adding CreatedTime
-        transactionDto.setCreatedAt(getCurrentDateTime());
+    public List<TransactionDto> getTransactionsByAccountId(Integer page, Integer pageSize,String accountId) {
+        Pageable paging = PageRequest.of(page, pageSize);
+        Page<Transaction> pageResult = repository.findByAccountId(paging,accountId);
+        if(pageResult.hasContent()) {
+            List<Transaction> transaction = pageResult.getContent();
+            return mapper.mapToDto(transaction);
+        } else {
+            return new ArrayList<>();
+        }
+    }
 
-        Transaction transaction = mapper.map(transactionDto);
-        Transaction transactionResult = repository.save(transaction);
-        return  mapper.map(transactionResult);
+    @Override
+    public PairClassDto createTransaction(String accountId, TransactionDto transactionDto, BalanceDto balanceDto) {
+        Transaction transactionResult = new Transaction();
+        if(accountId.equals(transactionDto.getAccountId())) {
+            switch(transactionDto.getType())  //NOSONAR
+            {
+                case CREDIT ->
+                {
+                    //Adding CreatedTime
+                    transactionDto.setCreatedAt(getCurrentDateTime());
+
+                    Transaction transaction = mapper.map(transactionDto);
+                    transactionResult = repository.save(transaction);
+                    balanceDto.setAmount(balanceDto.getAmount().doubleValue()+transactionDto.getAmount().doubleValue());
+                }
+                case DEBIT ->
+                {
+                    if(balanceDto!=null) {
+                        if (balanceDto.getAmount().doubleValue() > transactionDto.getAmount().doubleValue()) {
+                            //Adding CreatedTime
+                            transactionDto.setCreatedAt(getCurrentDateTime());
+
+                            Transaction transaction = mapper.map(transactionDto);
+                            transactionResult = repository.save(transaction);
+                            balanceDto.setAmount(balanceDto.getAmount().doubleValue()-transactionDto.getAmount().doubleValue());
+
+                        } else {
+                            throw new InsufficientBalanceException("Oops! Insufficient balance in your account!");
+                        }
+                    }
+                }
+            }
+
+        }
+        else {
+            throw new PathParamsVsInputParamsMismatchException("Account Id not found! Cannot create transaction.");
+        }
+        return new PairClassDto(mapper.map(transactionResult),balanceDto);
     }
 
     @Override
     public TransactionDto getTransactionById(String transactionId) {
-        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
+        Transaction transactionResult=repository.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId));
         return mapper.map(transactionResult);
     }
 
     @Override
     public String deleteTransaction(String transactionId) {
+        if(!repository.findById(transactionId).isPresent())
+        {
+            throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
+        }
         repository.deleteById(transactionId);
-        return "Transaction deleted successfully.";
+        return TRANSACTION_DELETED_SUCCESS;
+    }
+
+    @Override
+    public String deleteTransactionByAccountId(String accountId) {
+        repository.deleteByAccountId(accountId);
+        return TRANSACTION_DELETED_SUCCESS;
     }
 
 
