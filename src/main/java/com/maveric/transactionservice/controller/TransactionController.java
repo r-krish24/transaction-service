@@ -39,7 +39,7 @@ public class TransactionController {
 
     /* Saves a valid transaction */
     @PostMapping("accounts/{accountId}/transactions")
-    public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto) throws NullPointerException{
+    public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto){
         BalanceDto balanceDto = new BalanceDto();
         try {
             ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
@@ -53,7 +53,7 @@ public class TransactionController {
         try {
             balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto()); //NOSONAR
         }
-        catch(NullPointerException ex)
+        catch(Exception ex)
         {
             ex.printStackTrace();
         }
