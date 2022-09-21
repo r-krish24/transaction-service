@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WebMvcTest(TransactionController.class)
 @Tag("Integeration Tests")
-public class TransactionControllerTest {
+class TransactionControllerTest {
 
     @Autowired
     private MockMvc mock;
@@ -43,23 +43,6 @@ public class TransactionControllerTest {
     BalanceServiceConsumer balanceServiceConsumer;
 
 
-    @Test
-    public void shouldGetStatus200WhenRequestMadeTogetTransactions() throws Exception
-    {
-        mock.perform(get(apiV1)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-    @Test
-    public void shouldGetStatus200WhenRequestMadeTogetTransactionsByAccountId() throws Exception
-    {
-        mock.perform(get("/api/v1/accounts/1/transaction")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 
     /*@Test
     public void shouldGetStatus201WhenRequestMadeToCreateTransaction() throws Exception
@@ -78,32 +61,46 @@ public class TransactionControllerTest {
                 .andDo(print());
     } */
 
-    @Test
-    public void shouldGetStatus200WhenRequestMadeToGetTransactionDetails() throws Exception
-    {
+
+    @org.junit.jupiter.api.Test
+    void getTransactions() throws Exception {
+        mock.perform(get(apiV1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTransactionsByAccountId() throws Exception {
+        mock.perform(get("/api/v1/accounts/1/transaction")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+
+
+    @org.junit.jupiter.api.Test
+    void getTransactionDetails() throws Exception {
         mock.perform(get(apiV1+"/transactionId1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-    @Test
-    public void shouldGetStatus200WhenRequestMadeToDeleteTransaction() throws Exception
-    {
+    @org.junit.jupiter.api.Test
+    void deleteTransaction() throws Exception {
         mock.perform(delete(apiV1+"/transactionId1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-    @Test
-    public void shouldGetStatus200WhenRequestMadeToDeleteTransactionByAccountId() throws Exception
-    {
+    @org.junit.jupiter.api.Test
+    void deleteTransactionByAccountId() throws Exception {
         mock.perform(delete(apiV1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
-
-
 }

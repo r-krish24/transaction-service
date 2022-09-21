@@ -1,6 +1,6 @@
 package com.maveric.transactionservice.model;
 
-import com.maveric.transactionservice.constants.Type;
+import com.maveric.transactionservice.enums.Type;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

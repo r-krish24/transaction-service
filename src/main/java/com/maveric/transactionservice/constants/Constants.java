@@ -20,5 +20,12 @@ public class Constants {
 
     public static final String INVALID_INPUT_MESSAGE = "Kindly re-check the inputs provided";
 
+    public static final String SERVICE_UNAVAILABLE_CODE="503";
+    public static final String SERVICE_UNAVAILABLE_MESSAGE="Services down! Kindly contact administrator.";
+
+    public static final String INTERNAL_SERVER_ERROR_CODE="500";
+
+    public static final String INTERNAL_SERVER_ERROR_MESSAGE="Server could not resolve your request.";
+
 
 }

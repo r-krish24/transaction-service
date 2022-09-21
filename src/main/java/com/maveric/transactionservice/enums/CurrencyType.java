@@ -1,4 +1,4 @@
-package com.maveric.transactionservice.constants;
+package com.maveric.transactionservice.enums;
 
 public enum CurrencyType {
     INR,

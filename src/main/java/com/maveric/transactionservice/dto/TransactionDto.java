@@ -1,5 +1,5 @@
 package com.maveric.transactionservice.dto;
-import com.maveric.transactionservice.constants.Type;
+import com.maveric.transactionservice.enums.Type;
 import lombok.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

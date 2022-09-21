@@ -1,6 +1,6 @@
 package com.maveric.transactionservice.dto;
 
-import com.maveric.transactionservice.constants.CurrencyType;
+import com.maveric.transactionservice.enums.CurrencyType;
 import lombok.*;
 
 

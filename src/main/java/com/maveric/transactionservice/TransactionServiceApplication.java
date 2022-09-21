@@ -1,5 +1,6 @@
 package com.maveric.transactionservice;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableFeignClients
 public class TransactionServiceApplication {
 
+	@Value("${frontend.uri}")
+	private String frontend_uri;
 	public static void main(String[] args) {
 		SpringApplication.run(TransactionServiceApplication.class, args);
 	}
@@ -23,7 +26,7 @@ public class TransactionServiceApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+				registry.addMapping("/**").allowedOrigins(frontend_uri);
 			}
 		};
 	}

@@ -1,5 +1,6 @@
 package com.maveric.transactionservice.service;
 
+import com.maveric.transactionservice.controller.TransactionController;
 import com.maveric.transactionservice.dto.BalanceDto;
 import com.maveric.transactionservice.dto.PairClassDto;
 import com.maveric.transactionservice.dto.TransactionDto;
@@ -9,6 +10,7 @@ import com.maveric.transactionservice.exception.TransactionNotFoundException;
 import com.maveric.transactionservice.mapper.TransactionMapper;
 import com.maveric.transactionservice.model.Transaction;
 import com.maveric.transactionservice.repository.TransactionRepository;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,7 @@ import static com.maveric.transactionservice.util.Common.getCurrentDateTime;
 @Service
 public class TransactionServiceImpl implements TransactionService{
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TransactionServiceImpl.class);
     @Autowired
     private TransactionRepository repository;
 
@@ -48,8 +51,10 @@ public class TransactionServiceImpl implements TransactionService{
         Page<Transaction> pageResult = repository.findByAccountId(paging,accountId);
         if(pageResult.hasContent()) {
             List<Transaction> transaction = pageResult.getContent();
+            log.info("Retrieved list of transactions for given Account Id");
             return mapper.mapToDto(transaction);
         } else {
+            log.error("No Transaction info found!");
             return new ArrayList<>();
         }
     }
@@ -58,6 +63,11 @@ public class TransactionServiceImpl implements TransactionService{
     public PairClassDto createTransaction(String accountId, TransactionDto transactionDto, BalanceDto balanceDto) {
         Transaction transactionResult = new Transaction();
         if(accountId.equals(transactionDto.getAccountId())) {
+            if(balanceDto.get_id()==null)
+            {
+                log.error("No Balance information available for given Account Id");
+                throw new InsufficientBalanceException("No Balance information available for this account Id-"+transactionDto.getAccountId());
+            }
             switch(transactionDto.getType())  //NOSONAR
             {
                 case CREDIT ->
@@ -71,26 +81,27 @@ public class TransactionServiceImpl implements TransactionService{
                 }
                 case DEBIT ->
                 {
-                    if(balanceDto!=null) {
-                        if (balanceDto.getAmount().doubleValue() > transactionDto.getAmount().doubleValue()) {
-                            //Adding CreatedTime
-                            transactionDto.setCreatedAt(getCurrentDateTime());
+                    if (balanceDto.getAmount().doubleValue() > transactionDto.getAmount().doubleValue()) {
+                        //Adding CreatedTime
+                        transactionDto.setCreatedAt(getCurrentDateTime());
 
-                            Transaction transaction = mapper.map(transactionDto);
-                            transactionResult = repository.save(transaction);
-                            balanceDto.setAmount(balanceDto.getAmount().doubleValue()-transactionDto.getAmount().doubleValue());
+                        Transaction transaction = mapper.map(transactionDto);
+                        transactionResult = repository.save(transaction);
+                        balanceDto.setAmount(balanceDto.getAmount().doubleValue()-transactionDto.getAmount().doubleValue());
 
-                        } else {
-                            throw new InsufficientBalanceException("Oops! Insufficient balance in your account!");
-                        }
+                    } else {
+                        log.error("Cannot perform transaction, Insufficient balance in account!");
+                        throw new InsufficientBalanceException("Oops! Insufficient balance in your account!");
                     }
                 }
             }
 
         }
         else {
+            log.error("Account Id does not exist! Cannot create transaction.");
             throw new PathParamsVsInputParamsMismatchException("Account Id not found! Cannot create transaction.");
         }
+        log.info("Transaction created successfully!");
         return new PairClassDto(mapper.map(transactionResult),balanceDto);
     }
 
@@ -104,6 +115,7 @@ public class TransactionServiceImpl implements TransactionService{
     public String deleteTransaction(String transactionId) {
         if(!repository.findById(transactionId).isPresent())
         {
+            log.error("Transaction to be deleted is not found in DB.");
             throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MESSAGE+transactionId);
         }
         repository.deleteById(transactionId);
