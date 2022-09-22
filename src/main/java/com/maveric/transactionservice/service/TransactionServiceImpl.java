@@ -54,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService{
             log.info("Retrieved list of transactions for given Account Id");
             return mapper.mapToDto(transaction);
         } else {
-            log.error("No Transaction info found!");
+            log.info("No Transaction info found!");
             return new ArrayList<>();
         }
     }

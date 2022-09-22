@@ -41,8 +41,20 @@ class TransactionMapperImplTest {
     }
 
     @Test
+    void mapToModel_failure() {
+        List<Transaction> transaction = transactionMapper.mapToModel(Arrays.asList());
+        assertEquals(0,transaction.size());
+    }
+
+    @Test
     void mapToDto() {
         List<TransactionDto> transactionDto = transactionMapper.mapToDto(Arrays.asList(getTransaction(),getTransaction()));
         assertEquals(2,transactionDto.size());
+    }
+
+    @Test
+    void mapToDto_failure() {
+        List<TransactionDto> transactionDto = transactionMapper.mapToDto(Arrays.asList());
+        assertEquals(0,transactionDto.size());
     }
 }

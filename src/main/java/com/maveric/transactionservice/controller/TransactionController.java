@@ -48,10 +48,9 @@ public class TransactionController {
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto){
         log.info("API call to create a new transaction for valid Account Id");
         ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
-        BalanceDto balanceDto = responseEntity.getBody()==null?new BalanceDto():responseEntity.getBody();
-        String balanceId = balanceDto.get_id()==null?"":balanceDto.get_id();
+        BalanceDto balanceDto = responseEntity.getBody();
         PairClassDto createResponse = transactionService.createTransaction(accountId,transactionDto,balanceDto);
-        balanceServiceConsumer.updateBalance(accountId,balanceId,createResponse.getBalanceDto());
+        balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto());
         log.info("Balance information updated successfully");
         return new ResponseEntity<>(createResponse.getTransactionDto(), HttpStatus.CREATED);
     }

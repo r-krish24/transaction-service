@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @WebMvcTest(TransactionController.class)
-@Tag("Integeration Tests")
 class TransactionControllerTest {
 
     @Autowired
@@ -44,14 +43,16 @@ class TransactionControllerTest {
 
 
 
-    /*@Test
+
+   /* @org.junit.jupiter.api.Test
     public void shouldGetStatus201WhenRequestMadeToCreateTransaction() throws Exception
     {
         ResponseEntity<BalanceDto> responseEntity = new ResponseEntity<>(getBalanceDto(), HttpStatus.OK);
         when(balanceServiceConsumer.getBalances(any(String.class))).thenReturn(responseEntity);
 
-        PairClassDto createResponse = new PairClassDto(getTransactionDto(),getBalanceDto());
+        PairClassDto createResponse =  PairClassDto.builder().transactionDto(getTransactionDto()).balanceDto(getBalanceDto()).build();
         when(transactionService.createTransaction("1234",getTransactionDto(),getBalanceDto())).thenReturn(createResponse);
+        when(balanceServiceConsumer.updateBalance("1234","1",createResponse.getBalanceDto())).thenReturn(responseEntity);
 
         mock.perform(post(apiV1)
                         .contentType(MediaType.APPLICATION_JSON)
