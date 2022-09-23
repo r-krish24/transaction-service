@@ -1,6 +1,5 @@
 package com.maveric.transactionservice.exception;
 
-import com.maveric.transactionservice.controller.TransactionController;
 import com.maveric.transactionservice.dto.ErrorDto;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -18,13 +17,15 @@ public class ExceptionControllerAdvisor {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExceptionControllerAdvisor.class);
 
+    String exceptionString="";
     @ExceptionHandler(TransactionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public final ErrorDto handleTransactionNotFoundException(TransactionNotFoundException exception) {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(TRANSACTION_NOT_FOUND_CODE);
         errorDto.setMessage(exception.getMessage());
-        log.error("{} -> {}",TRANSACTION_NOT_FOUND_CODE,exception.getMessage());
+        exceptionString = exception.getMessage();
+        log.error("{}->{}",TRANSACTION_NOT_FOUND_CODE,exceptionString);
         return errorDto;
     }
 
@@ -36,7 +37,8 @@ public class ExceptionControllerAdvisor {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(BAD_REQUEST_CODE);
         errorDto.setMessage(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-        log.error("{} -> {} -> {}",BAD_REQUEST_CODE,ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(),ex.getMessage());
+        exceptionString = ex.getMessage();
+        log.error("{}->{}->{}",BAD_REQUEST_CODE,ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(),exceptionString);
         return errorDto;
     }
 
@@ -58,7 +60,8 @@ public class ExceptionControllerAdvisor {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(SERVICE_UNAVAILABLE_CODE);
         errorDto.setMessage(SERVICE_UNAVAILABLE_MESSAGE);
-        log.error("{} -> {} -> {}",SERVICE_UNAVAILABLE_CODE,SERVICE_UNAVAILABLE_MESSAGE,ex.getMessage());
+        exceptionString = ex.getMessage();
+        log.error("{} -> {} -> {}",SERVICE_UNAVAILABLE_CODE,SERVICE_UNAVAILABLE_MESSAGE,exceptionString);
         return errorDto;
     }
 
@@ -73,7 +76,7 @@ public class ExceptionControllerAdvisor {
             errorDto.setMessage(INVALID_INPUT_TYPE);
         else
             errorDto.setMessage(INVALID_INPUT_MESSAGE);
-        log.error("{} -> {}",BAD_REQUEST_CODE,message);
+        log.error("{}-> {}",BAD_REQUEST_CODE,message);
         return errorDto;
     }
 
@@ -83,7 +86,8 @@ public class ExceptionControllerAdvisor {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(BAD_REQUEST_CODE);
         errorDto.setMessage(exception.getMessage());
-        log.error("{} -> {}",BAD_REQUEST_CODE,exception.getMessage());
+        exceptionString = exception.getMessage();
+        log.error("{} ->{}",BAD_REQUEST_CODE,exceptionString);
         return errorDto;
     }
 
@@ -93,7 +97,8 @@ public class ExceptionControllerAdvisor {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(BAD_REQUEST_CODE);
         errorDto.setMessage(exception.getMessage());
-        log.error("{} -> {}",BAD_REQUEST_CODE,exception.getMessage());
+        exceptionString = exception.getMessage();
+        log.error("{} {}",BAD_REQUEST_CODE,exceptionString);
         return errorDto;
     }
 
@@ -103,7 +108,8 @@ public class ExceptionControllerAdvisor {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setCode(INTERNAL_SERVER_ERROR_CODE);
         errorDto.setMessage(INTERNAL_SERVER_ERROR_MESSAGE);
-        log.error("{} -> {} -> {}",INTERNAL_SERVER_ERROR_CODE,INTERNAL_SERVER_ERROR_MESSAGE,exception.getMessage());
+        exceptionString = exception.getMessage();
+        log.error("{} {}-> {}",INTERNAL_SERVER_ERROR_CODE,INTERNAL_SERVER_ERROR_MESSAGE,exceptionString);
         return errorDto;
     }
 
