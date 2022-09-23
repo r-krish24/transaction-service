@@ -1,10 +1,10 @@
 package com.maveric.transactionservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maveric.transactionservice.constants.CurrencyType;
-import com.maveric.transactionservice.constants.Type;
 import com.maveric.transactionservice.dto.BalanceDto;
+import com.maveric.transactionservice.dto.PairClassDto;
 import com.maveric.transactionservice.dto.TransactionDto;
+import com.maveric.transactionservice.enums.Type;
 import com.maveric.transactionservice.model.Transaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,10 +47,10 @@ public class TransactionServiceApplicationTests {
 	public static BalanceDto getBalanceDto()
 	{
 		return  BalanceDto.builder()
-				.accountId("1234")
-				.amount(2000)
-				.currency(CurrencyType.INR)
+				._id("1")
+				.amount(3000)
 				.build();
 	}
+
 
 }

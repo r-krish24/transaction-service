@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class PairClassDto {
     private com.maveric.transactionservice.dto.TransactionDto transactionDto;
     private com.maveric.transactionservice.dto.BalanceDto balanceDto;
