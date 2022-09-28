@@ -139,7 +139,7 @@ class TransactionServiceImplTest {
     @Test
     void createTransaction_AccountIdNotFound() {
 
-        Throwable error = assertThrows(PathParamsVsInputParamsMismatchException.class,()->service.createTransaction("123",getTransactionDto(),getBalanceDto()));
+        Throwable error = assertThrows(PathParamsVsInputParamsMismatchException.class,()->service.createTransaction("123",getTransactionDto(),getBalanceDto()));  //NOSONAR
         assertEquals("Account Id not found! Cannot create transaction.",error.getMessage());
     }
 
@@ -147,7 +147,7 @@ class TransactionServiceImplTest {
     void createTransaction_BalanceDtoNotFound() {
         BalanceDto balanceDto = getBalanceDto();
         balanceDto.set_id(null);
-        Throwable error = assertThrows(InsufficientBalanceException.class,()->service.createTransaction("1234",getTransactionDto(),balanceDto));
+        Throwable error = assertThrows(InsufficientBalanceException.class,()->service.createTransaction("1234",getTransactionDto(),balanceDto));  //NOSONAR
         assertEquals("No Balance information available for this account Id-1234",error.getMessage());
     }
 

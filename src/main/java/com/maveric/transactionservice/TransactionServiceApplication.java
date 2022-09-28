@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class TransactionServiceApplication {
 
 	@Value("${frontend.uri}")
-	private String frontend_uri;
+	private String frontendUri;
 	public static void main(String[] args) {
 		SpringApplication.run(TransactionServiceApplication.class, args);
 	}
@@ -26,7 +26,7 @@ public class TransactionServiceApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins(frontend_uri);
+				registry.addMapping("/**").allowedOrigins(frontendUri);
 			}
 		};
 	}

@@ -1,5 +1,6 @@
 package com.maveric.transactionservice.dto;
 
+import com.maveric.transactionservice.enums.Currency;
 import lombok.*;
 
 
@@ -7,7 +8,11 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class BalanceDto {
     private String  _id;
     private Number amount;
+    private String accountId;
+    private Currency currency;
+
 }
