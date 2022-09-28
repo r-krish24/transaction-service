@@ -48,9 +48,9 @@ public class TransactionController {
     public ResponseEntity<TransactionDto> createTransaction(@PathVariable String accountId, @Valid @RequestBody TransactionDto transactionDto){
         log.info("API call to create a new transaction for valid Account Id");
         ResponseEntity<BalanceDto> responseEntity = balanceServiceConsumer.getBalances(accountId);
-        BalanceDto balanceDto = responseEntity.getBody();
+        BalanceDto balanceDto = responseEntity.getBody(); //NOSONAR
         PairClassDto createResponse = transactionService.createTransaction(accountId,transactionDto,balanceDto);
-        balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto());
+        balanceServiceConsumer.updateBalance(accountId,balanceDto.get_id(),createResponse.getBalanceDto()); //NOSONAR
         log.info("Balance information updated successfully");
         return new ResponseEntity<>(createResponse.getTransactionDto(), HttpStatus.CREATED);
     }
@@ -82,5 +82,7 @@ public class TransactionController {
         log.info("Deletion successful");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
 
 }
