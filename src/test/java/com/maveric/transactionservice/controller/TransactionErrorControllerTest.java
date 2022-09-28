@@ -19,18 +19,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @WebMvcTest(TransactionErrorController.class)
-@Tag("Integeration Tests")
-public class TransactionErrorControllerTest {
+class TransactionErrorControllerTest {
 
     @Autowired
     private MockMvc mock;
 
-    @Test
-    public void shouldGetStatus404WhenRequestMadeToAnyWrongURI() throws Exception
-    {
+
+    @org.junit.jupiter.api.Test
+    void errorHandler() throws Exception {
         mock.perform(get("/error"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
-
 }
